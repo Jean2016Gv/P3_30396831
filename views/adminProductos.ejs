@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>adminCategorias</title>
+</head>
+<body>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Codigo</th>
+            <th>Color</th>
+            <th>Dimensiones</th>
+            <th>Descripcion</th>
+            <th>Precio</th>
+            <th>Categorias_ID</th>
+        </tr>
+    </thead>
+    <body>
+        <% for(const producto of productos) {
+            %>
+            <tr>
+                <td><%= producto.id %></td>
+                <td><%= producto.nombre %></td>
+                <td><%= producto.codigo %></td>
+                <td><%= producto.color %></td>
+                <td><%= producto.dimensiones %></td>
+                <td><%= producto.descripcion></td>
+                <td><%= producto.precio %></td>
+                <td><%= producto.categoria_id %></td>
+                <form class="form">
+                    <div class="form-container">
+                        <td class="d-flex gap-2" >
+                            <a href="" class="btn btn-warning btn-sm">Agregar</a>
+                            <a href="" class="btn btn-danger btn-sm"> Editar</a>
+                            <a href="" class="btn btn-danger btn-sm"> Eliminar</a>
+                          </td>
+                          <% } %>
+        
+                        
+                    </div>
+                </form>
+            </tr>
+         
+    </body>
+</table>
+    
+</body>
+</html>
