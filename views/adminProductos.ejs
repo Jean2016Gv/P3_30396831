@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1692/1692816.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>adminCategorias</title>
+    <title>Categorias</title>
 </head>
 <body>
 <table>
@@ -13,7 +14,7 @@
             <th>Nombre</th>
             <th>Codigo</th>
             <th>Color</th>
-            <th>Dimensiones</th>
+            <th>Marca</th>
             <th>Descripcion</th>
             <th>Precio</th>
             <th>Categorias_ID</th>
@@ -23,14 +24,14 @@
         <% for(const producto of productos) {
             %>
             <tr>
-                <td><%= producto.id %></td>
-                <td><%= producto.nombre %></td>
-                <td><%= producto.codigo %></td>
-                <td><%= producto.color %></td>
-                <td><%= producto.dimensiones %></td>
-                <td><%= producto.descripcion></td>
-                <td><%= producto.precio %></td>
-                <td><%= producto.categoria_id %></td>
+                <td><%= producto.ID %></td>
+                <td><%= producto.Nombre %></td>
+                <td><%= producto.Codigo %></td>
+                <td><%= producto.Color %></td>
+                <td><%= producto.Marca %></td>
+                <td><%= producto.Descripcion></td>
+                <td><%= producto.Precio %></td>
+                <td><%= producto.Categoria_ID %></td>
                 <form class="form">
                     <div class="form-container">
                         <td class="d-flex gap-2" >

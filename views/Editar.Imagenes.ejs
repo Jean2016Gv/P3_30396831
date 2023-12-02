@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1692/1692816.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Imagen</title>
     <style>
@@ -25,6 +26,7 @@
             font-size: 16px;
             line-height: 1.5;
             overflow-x: hidden;
+            margin: 2%;
         }
         body::after, body::before{
             content: '';
@@ -209,12 +211,29 @@
                 <form action="/administrador/imagenes/editar/<%= Imagenes.ID %>" method="post">
                     <div class="form-container">
                     
-                        <input class="input-control" type="URL"  name="URL" placeholder="Ingrese la URL" required value="<%= Imagenes.URL %>">
+                        <input  class="input-control" type="URL"  name="URL" placeholder="Ingrese la URL" required value="<%= Imagenes.URL %>">
                         
                         <input class="input-control" type="text" maxlength="2" minlength="2" name="Destacado" id="Destacado" placeholder="Ingrese el Destacado" value="<%= Imagenes.Destacado %>">
         
-                        <input class="input-control" type="number" name="Producto_ID"  placeholder="Ingrese el ID del Producto" min="1" required value="<%= Imagenes.Producto_ID %>">
-            
+                        <select  style=" width: 100%; border:none; background-color: rgb(157, 177, 245) ;
+                        padding: 0.5rem;
+                        color: white ;
+                        text-transform: uppercase;
+                        cursor: pointer;
+                        border: inset rgb(109, 14, 225);
+                        border-radius:5px;
+                        font-weight: 20%;" name="Producto_ID" id="Producto_ID" class="form-select">
+                            <option value="" disabled selected>Productos</option>
+                            <% if (Productos && Productos.length > 0) { %>
+                              <%Productos.forEach((producto) => { %>
+                                <option value="<%= producto.ID %>" <% if (producto.ID === Imagenes.Producto_ID) { %>selected<% } %>>
+                                  <%= producto.Nombre %>
+                                </option>
+                              <% }); %>
+                            <% } else { %>
+                              <option value="" selected>No existen productos en el sistema</option>
+                            <% } %>
+                          </select>
                     </div>
                     <div class="buttons">
     

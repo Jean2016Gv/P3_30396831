@@ -2,15 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1692/1692816.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2? family= Bitter:ital,wght@1,700 & family= Montserrat:wght@300;400;500;600 & display=swap');
-        *{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
         body{
             background-color:  rgb(18, 47, 124);
             color: white;
@@ -19,6 +16,7 @@
             font-size: 16px;
             line-height: 1.5;
             overflow-x: hidden;
+            margin: 2%;
         }
         body::after, body::before{
             content: '';
@@ -149,10 +147,35 @@
         .form-conte .btn:hover::before{
             background-color: hsla(0, 0%, 0%, 0.3) ;
         }
+        .bi-lock-fill{
+            position: absolute;
+            margin-top: -35px;
+            transform: translate(330px);
+        }
+        .bi-person-fill{
+            position: absolute;
+            margin-top: -35px;
+            transform: translate(330px);
+        }
+        .btn-1{
+            margin: 20%;
+            text-decoration: none;
+            padding: 100%;
+            font-size: 1.2rem;
+            position: relative;
+            margin: 32px;
+            background-color: rgb(77, 106, 220);
+            color: white;
+            font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            border-radius: 50px;
+            transition: transform 0.3s ease;
+            transform: translateY(-30%);
+        }
 
     </style>
 </head>
 <body>
+    <a href="/" class="btn-1 " style=" padding: 20px 30px;font-size: 1.4rem; transform: translate(-700%); ">Inicio</a>
     <section class="form-main">
         <div class="form-conte">
             <div class="circle-1"></div>
@@ -167,7 +190,7 @@
                     </div>
 
                     <div class="input-box">
-                        <input type="password" placeholder="Password" id="contraseña" name="contraseña" class="input-control">
+                        <input type="password" placeholder="Contraseña" id="contraseña" name="contraseña" class="input-control">
                         <i class="bi bi-lock-fill"></i>
 
                     </div>

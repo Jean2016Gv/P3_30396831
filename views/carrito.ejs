@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1692/1692816.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TurboClean</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2? family= Bitter:ital,wght@1,700 & family= Montserrat:wght@300;400;500;600 & display=swap');
+          body{
+            background-color:rgb(18, 47, 124) ;
+            font-weight: 300;
+            font-size: 16px;
+            line-height: 1.5;
+            overflow-x: hidden;
+            font-family: 'Montserrat', sans-serif;
+        }
+        body::after, body::before{
+            content: '';
+            position: fixed;
+            height: 900px;
+            width: 900px;
+            border-radius: 50%;
+            z-index: -1;
+            filter: blur(150px);
+            opacity: 0.5;
+        }
+        body::before{
+            background-color: rgb(28, 28, 171);
+            left: 0;
+            bottom: 0;
+            transform: translate(-50%);
+        }
+        body::after{
+            background-color: rgb(62, 3, 118);
+            right: 0;
+            top: 0;
+            transform: translate(50%);
+        }
+        .circle-1,
+        .circle-2,
+        .circle-3{
+            position: absolute;
+            background: linear-gradient(to right, rgb(55, 167, 242), rgb(23, 213, 143));
+            border-radius: 50%;
+            z-index: -1;
+        }
+       .circle-1{
+            height: 100px;
+            width: 100px;
+            left: 0;
+            top: 10%;
+            transform: translateX(300%);
+        }
+        .circle-2{
+            height: 80px;
+            width: 80px;
+            right: 0;
+            bottom: 0;
+            transform: translate(-500%);
+        }
+        .circle-3{
+            height: 50px;
+            width: 50px;
+            right: 10%;
+            top: 10%;
+            transform: translate(-150%);
+        }
+        ul{
+            list-style-type: none;
+        }
+        a{
+            text-decoration: none;
+        }
+        h2{
+            color:  rgb(18, 47, 124) ;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+            text-align: center;
+        }
+        h1{
+        color: white; 
+        font-size: 2rem; 
+        font-weight: 400;
+        font-size: 2rem ;
+        text-align: left;
+        font-family: 'Montserrat', sans-serif;
+        margin: 10px;
+        }
+        .contenedor-carrito{
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .wrapper{
+            display: grid;
+            grid-template-columns: 2fr 7fr;
+        }
+        aside{
+            padding: 1rem;
+            padding-right: 0;
+            color: white;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transform: translateY(20%);
+        }
+        main{
+            background-color: white;
+            margin: 5rem;
+            margin-left: 0;
+            border-radius: 2rem;
+            padding: 2rem;
+        }
+        .boton-carrito{
+            color: white;
+        }
+        .boton-volver{
+            color: white;
+            gap: 2rem
+        }
+        .boton-menu{
+            background-color: transparent;
+            border: 0;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            gap: 1rem;
+            font-weight: 300;
+            padding: 1rem;
+            font-size: .95rem;
+            align-items: center;
+        }
+    
+        .menu{
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+        }
+        .boton-menu.active::before{
+            content: '';
+            position: absolute;
+            width: 1rem;
+            height: 2rem;
+            bottom:  100%;
+            right: 0;
+            background-color: transparent;
+            border-bottom-right-radius: .5rem;
+            box-shadow: 0 1rem 0 white;
+        }
+        .boton-menu.active::after{
+            content: '';
+            position: absolute;
+            width: 1rem;
+            height: 2rem;
+            top:  100%;
+            right: 0;
+            background-color: transparent;
+            border-top-right-radius: .5rem;
+            box-shadow: 0 -1rem 0 white;
+        }
+        .boton-menu.active{
+            background-color: white;
+            color:  rgb(18, 47, 124);
+            width: 100%;
+            border-top-left-radius: 1rem;
+            border-bottom-left-radius: 1rem;
+            position: relative;
+           
+        }
+        .carrito-vacio {
+            color: rgb(18, 47, 124);
+        }
+        .carrito-comprado{
+            color: rgb(18, 47, 124) ;
+        }
+        .carrito-productos{
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .carrito-producto{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: rgb(158, 190, 216);
+            color: rgb(18, 47, 124);
+            padding: 0.5rem;
+            padding-right: 1.5rem;
+            border-radius: 1rem ;
+        }
+        img{
+            width: 5rem;
+            border-radius: 1rem;
+        }
+    
+        .carrito-producto small{
+            font-size: 0.75rem;
+        }
+        .carrito-producto-eliminar{
+            border: 0;
+            background-color: rgb(158, 190, 216) ;
+            color: rgb(121, 0, 0);
+            cursor: pointer;
+        }
+        .carrito-acciones{
+            display: flex;
+            justify-content: space-between;
+        }
+        .carrito-acciones-vaciar{
+            border: 0;
+            background-color: rgb(158, 190, 216) ;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            color: rgb(18, 47, 124) ;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+        .carrito-acciones-derecha{
+            display: flex;
+        }
+        .carrito-acciones-total{
+            transform: translate(-10%);
+            display: flex;
+            background-color: rgb(158, 190, 216) ;
+            padding: 0.5rem;
+            border-top-left-radius: 1rem;
+            border-bottom-left-radius: 1rem;
+            color: rgb(18, 47, 124) ;
+            text-transform: uppercase;
+            gap: 1rem;
+        }
+        .carrito-acciones-comprar{
+            transform: translate(-13%);
+            border: 0;
+            background-color: rgb(18, 47, 124) ;
+            padding: 0.5rem;
+            color: white ;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-top-right-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+        }
+        .disabled{
+            display: none;
+        }
+    </style>
+</head>
+<h1>TurboClean</h1>
+<body>
+        <div class="circle-1"></div>
+        <div class="circle-2"></div>
+        <div class="circle-3"></div>
+    <div class="wrapper">
+        <aside>
+            <nav>
+                <ul>
+                    <li><a class="boton-menu boton-volver" href="/inicio"><i class="bi bi-arrow-return-left"></i>Seguir comprando </a>
+                    </li>
+                    <li><a class="boton-menu boton-carrito active" href="/carrito"><i class="bi bi-cart-fill"></i>Carrito <span class="numerito">0</span></a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        <main>
+            <h2 class="titulo-principal">Carrito</h2>
+            <div class="contenedor-carrito">
+                <p class="carrito-vacio">Tú carrito está vacío. <i class="bi bi-emoji-frown-fill"></i></p>
+                <div class="carrito-productos disabled">
+                    <div class="carrito-producto">
+                        <img class="producto-imagen" src="https://m.media-amazon.com/images/I/61MYmvfci0L._AC_UF894,1000_QL80_.jpg" alt="">
+                        <div class="carrito-producto-titulo">
+                            <small>Titulo</small>
+                            <h3>litio Black + Decker CHV1410L </h3>
+                        </div>
+                        <div class="carrito-producto-cantidad">
+                            <small>Cantidad</small>
+                            <p>1</p>
+                        </div>
+                        <div class="carrito-producto-precio">
+                            <small>Precio</small>
+                            <p>$1000</p>
+                        </div>
+                        <div class="carrito-precio-subtotal">
+                            <small>Subtotal</small>
+                            <p>$1000</p>
+                        </div>
+                        <button class="carrito-producto-eliminar"><i class="bi bi-trash-fill"></i></button>
+                    </div>
+                </div>
+                <div class="carrito-acciones disabled">
+                    <div class="carrito-acciones-izquierda">
+                        <button class="carrito-acciones-vaciar">Vaciar carrito</button>
+                    </div>
+                    <div class="carrito-acciones-derecha">
+                        <div class="carrito-acciones-total">
+                            <p>Total:</p>
+                            <p id="total">$1000</p>
+                        </div>
+                        <button class="carrito-acciones-comprar">Comprar Ahora</button>
+                    </div>
+                </div>
+                <p class="carrito-comprado disabled">Muchas Gracias por tu compra. <i class="bi bi-emoji-laughing-fill"></i></p>
+            </div>
+        </main>
+
+    </div>
+</body>
+</html>

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1692/1692816.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eliminar Producto</title>
     <style>
@@ -25,6 +26,7 @@
             font-size: 16px;
             line-height: 1.5;
             overflow-x: hidden;
+            margin: 2%;
         }
         body::after, body::before{
             content: '';
@@ -215,7 +217,7 @@
     
                         <input readonly type="text" placeholder="Ingrese el Color" id="Color" name="Color" class="input-control" required style="margin: 5%;" value="<%= Productos.Color %>">
     
-                        <input readonly type="text" placeholder="Ingrese Las Dimensiones del Producto" id="Dimensiones" name="Dimensiones" class="input-control" required style="margin: 5%;" value="<%= Productos.Dimensiones %>">
+                        <input readonly type="text" placeholder="Ingrese La Marca del Producto" id="Marca" name="Marca" class="input-control" required style="margin: 5%;" value="<%= Productos.Marca %>">
     
                         <input  readonly class="input-control" type="number" name="Precio"  id="Precio" placeholder="Ingrese el Precio "  min="1" step="0.01" required style="margin: 5%;" value="<%= Productos.Precio%>">
     

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1692/1692816.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Imagenes</title>
     <style>
@@ -92,12 +93,13 @@
           line-height: 2;
           font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
           text-align: center;
+          color: white;
         }
         table body tr{
             border-bottom: 1px solid white; 
         }
         table tbody tr:nth-of-type(even) { 
-            background-color: #d2b0f6;
+            background-color: rgb(157, 177, 245);
             border-bottom: white;
          }
           table tbody tr:last-of-type { 
@@ -184,22 +186,22 @@
         <div class="circle-2"></div>
         <div class="circle-3"></div>
         
-        <% Imagenes.forEach(imagen=> { %>
+        <% Imagenes.forEach((imagen) => { %>
             <tr>
-        <td><%= imagen.ID %></td>
-        <td><img src="<%= imagen.URL %>" width="200" height="250"></td>
-        <td><%= imagen.Destacado  %></td>
-        <td><%= imagen.Producto_ID  %></td>
-         <td class="d-flex gap-2" >
-            <div class="container-2">
-                <div class="buttons">
+              <td><%= imagen.ID %></td>
+              <td><img src="<%= imagen.URL %>" style="max-height: 200px; max-width:200px;"></td>
+              <td><%= imagen.Destacado %></td>
+              <td><%= imagen.Producto_ID %></td>
+              <td class="d-flex gap-2">
+                <div class="container-2">
+                  <div class="buttons">
                     <a href="/administrador/imagenes/editar/<%= imagen.ID %>" class="btn btn">Editar</a>
                     <a href="/administrador/imagenes/eliminar/<%= imagen.ID %>" class="btn btn">Eliminar</a>
+                  </div>
                 </div>
-                      </td>
-        <% }); %>
-      
-      </tr>
+              </td>
+            </tr>
+          <% }); %>
     
     </tbody>
    </table>

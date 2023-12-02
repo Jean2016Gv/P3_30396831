@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1692/1692816.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agregar Imagenes</title>
     <style>
           @import url('https://fonts.googleapis.com/css2? family= Bitter:ital,wght@1,700 & family= Montserrat:wght@300;400;500;600 & display=swap');
         h1{
-            margin: 5%;
+            margin: 10%;
             text-align: center;
             color: rgb(255, 255, 255);
             font-family: 'Montserrat', sans-serif;
@@ -195,6 +196,18 @@
             z-index: -1;
             transition: transform 0.3s ease;
         }
+        .form-select{
+            width: 100%; border:none; background-color: rgb(18, 47, 124) ;
+            padding: 0.5rem;
+            color: white ;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: inset rgb(89, 82, 235);
+            border-radius:5px;
+            font-weight: 20%;
+            margin: 5%;
+            margin-left: 2%;
+        }
     </style>
 </head>
 <a href="/administrador/imagenes" class="btn btn " style=" padding: 20px 30px;font-size: 1.4rem; transform: translate(-500%); margin-bottom:  -20%; ">Regresar</a>
@@ -211,10 +224,24 @@
                         
                             <input class="input-control" type="URL"  name="URL" placeholder="Ingrese la URL" required value="<%= Imagenes.URL %>">
                             
-                            <input class="input-control" type="text" maxlength="2" minlength="2" name="Destacado" id="Destacado" placeholder="Seleccione el Destacado" value="<%= Imagenes.Destacado %>">
+                            <select name="destacado" id="destacado" class="form-select">
+                                <option selected disabled value="">Destacado</option>
+                                <option value="Si">Si</option>
+                                <option value="No">No</option>
+                              </select>
             
-                            <input class="input-control" type="number" name="Producto_ID"  placeholder="Ingrese el ID del Producto" min="1" required value="<%= Imagenes.Producto_ID %>">
-                
+                            <select name="Producto_ID" id="Producto_ID" class="form-select">
+                                <option value="" selected disabled>Productos</option>
+                                <% if (Productos) { %>
+                                  <% Productos.forEach((producto) => { %>
+                                    <% if (producto) { %>
+                                      <option value="<%= producto.ID %>"><%= producto.Nombre %></option>
+                                    <% } %>
+                                  <% }); %>
+                                <% } else { %>
+                                  <option value="">No hay productos</option>
+                                <% } %>
+                              </select>
                         </div>
                         <div class="buttons">
         

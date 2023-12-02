@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1692/1692816.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agregar Productos</title>
     <style>
@@ -194,6 +195,18 @@
             z-index: -1;
             transition: transform 0.3s ease;
         }
+        .form-select{
+            width: 100%; border:none; background-color: rgb(18, 47, 124) ;
+            padding: 0.5rem;
+            color: white ;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: inset rgb(89, 82, 235);
+            border-radius:5px;
+            font-weight: 20%;
+            margin: 5%;
+            margin-left: 5%;
+        }
 
     </style>
 </head>
@@ -216,11 +229,22 @@
 
                         <input type="text" placeholder="Ingrese el Color" id="Color" name="Color" class="input-control" required style="margin: 5%;">
 
-                        <input type="text" placeholder="Ingrese Las Dimensiones del Producto" id="Dimensiones" name="Dimensiones" class="input-control" required style="margin: 5%;">
+                        <input type="text" placeholder="Ingrese La Marca del Producto" id="Marca" name="Marca" class="input-control" required style="margin: 5%;">
 
                         <input  class="input-control" type="number" name="Precio"  id="Precio" placeholder="Ingrese el Precio "  min="1" step="0.01" required style="margin: 5%;">
 
-                        <input class="input-control" type="number" name="Categoria_ID" id="Categoria_ID"  placeholder="Ingrese la id de la categoria" min="1" required style="margin: 5%;">
+                        <select name="Categoria_ID" id="Categoria_ID" class="form-select" style="margin: 5%;">
+                            <option value="" selected disabled>Categorías</option>
+                            <% if (Categorias && Categorias.length > 0) { %>
+                                <% Categorias.forEach((categoria) => { %>
+                                    <% if (categoria) { %>
+                                        <option value="<%= categoria.ID %>"><%= categoria.Nombre %></option>
+                                    <% } %>
+                                <% }); %>
+                            <% } else { %>
+                                <option value="">No hay categorías disponibles</option>
+                            <% } %>
+                        </select>
                     </div>
                     <div class="buttons">
     

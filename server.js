@@ -14,9 +14,30 @@ app.use(session({
     resave: false,
     saveUninitialized: false
   }));
-app.get('/', function(req, res) {
-    res.render('inicio');
-});
+  app.get('/', function(req, res) {
+    const sqlProd = "SELECT * FROM Productos ORDER BY id";
+    const sqlCat = "SELECT * FROM Categorias ORDER BY id";
+    const sqlIma = "SELECT * FROM Imagenes ORDER BY id";
+    db.all(sqlProd, [], (errProductos, rowsProductos) => {
+      if (errProductos) {
+        return console.error(errProductos.message);
+      } else {
+        db.all(sqlCat, [], (errCategorias, rowsCategorias) => {
+          if (errCategorias) {
+            return console.error(errCategorias.message);
+          } else {
+            db.all(sqlIma, [], (errImagenes, rowsImagenes) => {
+              if (errImagenes) {
+                return console.error(errImagenes.message);
+              } else {
+                res.render("inicio", { Productos: rowsProductos, Categorias: rowsCategorias, Imagenes: rowsImagenes });
+              }
+            });
+          }
+        });
+      }
+    })
+  });
 app.get('/login', (req, res) => {
   if (req.session.admin == true) {
     res.redirect("/administrador");
@@ -172,17 +193,26 @@ app.get('/cerrarsesion', (req, res) => {
       res.redirect('/login');
     }
   });
-   app.get('/administrador/productos/crear', (req, res) => {
+  app.get('/administrador/productos/crear', (req, res) => {
     if (req.session.admin == true) {
-      res.render('Agg.Productos.ejs', {Productos:{}});
+      const sqlCategorias = "SELECT * FROM Categorias ORDER BY ID";
+      
+      db.all(sqlCategorias, (err, Categorias) => {
+        if (err) {
+          console.error(err);
+          res.status(500).send("Error al obtener las categorías.");
+        } else {
+          res.render('Agg.Productos.ejs', { Categorias, Productos: {} });
+        }
+      });
     } else {
       res.redirect('/login');
     }
-   });
+  });
    app.post('/administrador/productos/crear', (req, res) => {
     if (req.session.admin == true) {
-      const sql="INSERT INTO Productos (Nombre ,Codigo,Descripcion,Color,Dimensiones,Precio,Categoria_ID) VALUES (?,?,?,?,?,?,?)";
-  const newpro = [req.body.Nombre, req.body.Codigo, req.body.Descripcion, req.body.Color, req.body.Dimensiones, req.body.Precio, req.body.Categoria_ID];
+      const sql="INSERT INTO Productos (Nombre ,Codigo,Descripcion,Color,Marca,Precio,Categoria_ID) VALUES (?,?,?,?,?,?,?)";
+  const newpro = [req.body.Nombre, req.body.Codigo, req.body.Descripcion, req.body.Color, req.body.Marca, req.body.Precio, req.body.Categoria_ID];
   db.run(sql, newpro, err => {
   if(err) {
     return console.error(err.message);
@@ -224,21 +254,34 @@ app.get('/cerrarsesion', (req, res) => {
 
    app.get('/administrador/productos/editar/:id', (req, res) => {
     if (req.session.admin == true) {
-      const id=req.params.id;
-    const sql="SELECT * FROM Productos where id=?";
-    db.get(sql, id, (err, rows)=>{
-        res.render('Editar.Productos.ejs', {Productos:rows});
-     
-    })
+      const id = req.params.id;
+      const sql = "SELECT * FROM Productos WHERE id=?";
+      const sqlCat = "SELECT * FROM categorias";
+      
+      db.get(sql, id, (err, rows) => {
+        if (err) {
+          console.error(err);
+          res.status(500).send("Error al obtener el producto.");
+        } else {
+          db.all(sqlCat, (err, Categorias) => {
+            if (err) {
+              console.error(err);
+              res.status(500).send("Error al obtener las categorías.");
+            } else {
+              res.render('Editar.Productos.ejs', { Productos: rows, Categorias });
+            }
+          });
+        }
+      });
     } else {
-     res.redirect('/login'); 
+      res.redirect('/login');
     }
-   });
+  });
    app.post('/administrador/productos/editar/:id', (req, res) => {
     if (req.session.admin == true) {
       const id=req.params.id;
-      const prod =  [req.body.Nombre, req.body.Codigo, req.body.Descripcion, req.body.Color, req.body.Dimensiones, req.body.Precio, req.body.Categoria_ID, id];
-      const sql = "UPDATE Productos SET Nombre=?, Codigo=?, Descripcion=?, Color=?, Dimensiones=?, Precio=?, Categoria_ID=? WHERE (id=?)";
+      const prod =  [req.body.Nombre, req.body.Codigo, req.body.Descripcion, req.body.Color, req.body.Marca, req.body.Precio, req.body.Categoria_ID, id];
+      const sql = "UPDATE Productos SET Nombre=?, Codigo=?, Descripcion=?, Color=?, Marca=?, Precio=?, Categoria_ID=? WHERE (id=?)";
       db.run(sql, prod, err => {
        if(err) {
          return console.error(err.message);
@@ -267,11 +310,19 @@ app.get('/cerrarsesion', (req, res) => {
   });
   app.get('/administrador/imagenes/crear', (req, res) => {
     if (req.session.admin == true) {
-      res.render('Agg.Imagenes.ejs', {Imagenes:{}});
+      const sql = "SELECT * FROM productos";
+      db.all(sql, (err, Productos) => {
+        if (err) {
+          console.error(err);
+          res.status(500).send("Error al obtener los productos.");
+        } else {
+          res.render('Agg.Imagenes.ejs', { Productos, Imagenes: {} });
+        }
+      });
     } else {
       res.redirect('/login');
     }
-   });
+  });
    app.post('/administrador/imagenes/crear', (req, res) => {
     if (req.session.admin == true) {
       const sql="INSERT INTO Imagenes (URL,Destacado,Producto_ID) VALUES (?,?,?)";
@@ -317,16 +368,29 @@ app.get('/cerrarsesion', (req, res) => {
 
    app.get('/administrador/imagenes/editar/:id', (req, res) => {
     if (req.session.admin == true) {
-      const id=req.params.id;
-    const sql="SELECT * FROM Imagenes where id=?";
-    db.get(sql, id, (err, rows)=>{
-        res.render('Editar.Imagenes.ejs', {Imagenes:rows});
-     
-    })
+      const id = req.params.id;
+      const sql = "SELECT * FROM Imagenes WHERE id=?";
+      const sqlProd = "SELECT * FROM productos";
+      
+      db.get(sql, id, (err, rows) => {
+        if (err) {
+          console.error(err);
+          res.status(500).send("Error al obtener la imagen.");
+        } else {
+          db.all(sqlProd, (err, Productos) => {
+            if (err) {
+              console.error(err);
+              res.status(500).send("Error al obtener los productos.");
+            } else {
+              res.render('Editar.Imagenes.ejs', { Imagenes: rows, Productos });
+            }
+          });
+        }
+      });
     } else {
-     res.redirect('/login'); 
+      res.redirect('/login');
     }
-   });
+  });
    app.post('/administrador/imagenes/editar/:id', (req, res) => {
     if (req.session.admin == true) {
       const id=req.params.id;
@@ -348,15 +412,129 @@ app.get('/cerrarsesion', (req, res) => {
     req.session.destroy();
       res.redirect('/login');
    });
+   app.get('/carrito', function(req, res) {
+    res.render('carrito');
+});
 
+app.get('/info/:id', (req, res) => {
+  const id = req.params.id;
+  const sqlProd = "SELECT * FROM productos WHERE id = ?";
+  const sqlIma = "SELECT * FROM imagenes WHERE producto_id = ?";
+  const sqlCat = "SELECT * FROM categorias WHERE id IN (SELECT categoria_id FROM productos WHERE id = ?)";
+  
+  db.get(sqlProd, id, (err, productos) => {
+    if (err) {
+      console.error(err);
+      console.log("Error al obtener el producto.");
+    } else {
+      db.get(sqlIma, id, (err, imagenes) => {
+        if (err) {
+          console.error(err);
+          console.log("Error al obtener las imágenes.");
+        } else {
+          db.get(sqlCat, id, (err, categorias) => {
+            if (err) {
+              console.error(err);
+              console.log("Error al obtener las categorías.");
+            } else {
+              res.render("info", { productos, imagenes, categorias, id });
+            }
+          });
+        }
+      });
+    }
+  });
+});
 
+app.post('/buscar', (req, res) => {
+  const { Nombre, Categoria, Descripcion, Marca, Color } = req.body;
+ let sql = "SELECT * FROM Productos WHERE 1=1";
+  const sqlIma = "SELECT * FROM Imagenes ORDER BY id";
+  const sqlCat = "SELECT * FROM Categorias ORDER BY id";
+  const params = [];
+  if (Nombre) {
+    sql += " AND Nombre LIKE '%' || ? || '%'";
+    params.push(Nombre);
+  }
 
+  if (Categoria) {
+    sql += " AND Categoria_ID = ?";
+    params.push(Categoria);
+  }
 
+  if (Descripcion) {
+    sql += " AND descripcion LIKE '%' || ? || '%'";
+    params.push(Descripcion);
+  }
 
+  if (Marca) {
+    sql += " AND Marca LIKE '%' || ? || '%'";
+    params.push(Marca);
+  }
+
+  if (Color) {
+    sql += " AND Color LIKE '%' || ? || '%'";
+    params.push(Color);
+  }
+
+  db.all(sql, params, (err, rows) => {
+    if (err) {
+      return console.error(err.message);
+    } else {
+      db.all(sqlIma, (err, Imagenes) => {
+        if (err) {
+          return console.error(err.message);
+        } else {
+          db.all(sqlCat, (err, Categorias) => {
+            if (err) {
+              return console.error(err.message);
+            } else {
+              res.render("inicio", { Productos: rows, Imagenes, Categorias  });
+            }
+          });
+        }
+      });
+    }
+  });
+});
+app.get('/producto/:id', (req, res) => {
+  const ID = req.params.id;
+  const sqlProd = "SELECT * FROM Productos WHERE ID = ?";
+  const sqlIma = "SELECT * FROM Imagenes WHERE Producto_ID = ?";
+  const sqlCat = "SELECT * FROM Categorias WHERE ID IN (SELECT Categoria_ID FROM Productos WHERE ID = ?)";
+  
+  db.get(sqlProd, ID, (err, Productos) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    
+    if (!Productos) {
+      res.status(404).send("Producto no encontrado.");
+      return;
+    }
+
+    db.get(sqlIma, ID, (err, Imagenes) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+
+      db.get(sqlCat, ID, (err, Categorias) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+
+        res.render('producto.perfil.ejs', { Productos, Imagenes, Categorias, ID });
+      });
+    });
+  });
+});
 
 
    app.get('/*', function(req, res) {
-    res.render('inicio');
+    res.redirect('/');
   });
 
 
@@ -391,7 +569,7 @@ db.run(sql_ctg, err => {
 
 //Crear Tabla Productos
 const sql_prdt = `CREATE TABLE IF NOT EXISTS Productos(ID INTEGER PRIMARY KEY AUTOINCREMENT,Nombre TEXT,Codigo TEXT,Descripcion TEXT,
-  Color TEXT,Dimensiones TEXT ,Precio REAL,Categoria_ID INTEGER,FOREIGN KEY(Categoria_ID) REFERENCES Categorias(ID))`
+  Color TEXT,Marca TEXT ,Precio REAL,Categoria_ID INTEGER,FOREIGN KEY(Categoria_ID) REFERENCES Categorias(ID))`
   
   db.run(sql_prdt, err => {
       if (err) {
