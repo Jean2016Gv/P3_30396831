@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1692/1692816.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos</title>
-    <style>
-       @import url('https://fonts.googleapis.com/css2? family= Bitter:ital,wght@1,700 & family= Montserrat:wght@300;400;500;600 & display=swap');
+    <title>Transacciones</title>
+    </head>
+    
+   <style>
+     @import url('https://fonts.googleapis.com/css2? family= Bitter:ital,wght@1,700 & family= Montserrat:wght@300;400;500;600 & display=swap');
         body{
             background-color:rgb(18, 47, 124) ;
             font-weight: 300;
@@ -73,7 +75,7 @@
         }
         table{
             border-collapse: collapse;
-            margin: 25px 25px;
+            margin: 25px 0;
             font-size: 1em;
             font-family: sans-serif; 
             width: 30%;
@@ -106,7 +108,7 @@
             border-bottom: 1px solid rgb(255, 255, 255);
          }
         .sinbordefondo {
-         background-color:#d2b0f6;
+         background-color:#cdcdcd;
          border: 5;
          border-radius: 5px;
          outline: none;
@@ -163,65 +165,50 @@
         .btn:hover::before{
             transform: translate(12px, 12px);
         }
-
     </style>
 </head>
 <a href="/inicio" style="text-decoration:underline; margin:10% translate(500%); font-size: 1.5rem; color: white; padding-left: 87%; margin-bottom: 40%;">Cerrar Sesión</a>
-<a href="/administrador" class="btn btn " style=" padding: 20px 30px;font-size: 1.4rem; transform: translate(-700%); ">Inicio</a>
-<h1>Productos</h1>
+  <a href="/administrador" class="btn btn " style=" padding: 20px 30px;font-size: 1.4rem; transform: translate(-700%); ">Inicio</a>
+<h1>Transacciones</h1>
 <body>
+   
     <table class="content-table">
     
-        </div>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Codigo</th>
-                <th>Descripcion</th>
-                <th>Color</th>
-                <th>Marca</th>
-                <th>Precio</th>
-                <th>Categoria</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <div class="circle-1"></div> 
-           <div class="circle-2"></div>
-           <div class="circle-3"></div>
-            
-            <% Productos.forEach(producto => { %>
-                <tr>
-            <td><%= producto.ID %></td>
-            <td><%= producto.Nombre %></td>
-            <td><%= producto.Codigo  %></td>
-            <td style="text-align:inherit;"><%= producto.Descripcion  %></td>
-            <td><%= producto.Color  %></td>
-            <td><%= producto.Marca  %></td>
-            <td><%= producto.Precio  %></td>
-            <td><%= producto.Categoria_ID  %></td>
-             <td class="d-flex gap-2" >
-                <div class="container-2">
-                    <div class="buttons">
-                        <a href="/administrador/productos/editar/<%= producto.ID %>" class="btn btn">Editar</a>
-                        <a href="/administrador/productos/eliminar/<%= producto.ID %>" class="btn btn">Eliminar</a>
-                    </div>
-                          </td>
-            <% }); %>
-          
-          </tr>
+    </div>
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Cantidad</th>
+            <th>Total</th>
+            <th>Fecha</th>
+            <th>Ip Cliente</th>
+            <th>Id. Producto</th>
+            <th>Id. Cliente</th>  
+        </tr>
+    </thead>
+    <tbody>
+        <div class="circle-1"></div>
+        <div class="circle-2"></div>
+        <div class="circle-3"></div>
         
-        </tbody>
-       </table>
-       <body>
-        <div class="container-1">
-            <div class="buttons">
+        <% compra.forEach(com=> { %>
+            <tr>
+                <td><%= com.Transaccion_ID %></td>
+                <td><%= com.Cantidad %></td>
+                <td><%= com.Total_Pagado %></td>
+                <td><%= com.Fecha %></td>
+                <td><%= com.IP_Cliente %></td>
+                <td><%= com.Producto_ID %></td>
+                <td><%= com.Cliente_ID %></td>
+        <% }); %>
+      
+      </tr>
     
-                <a href="/administrador/productos/crear" class="btn btn " style=" padding: 20px 30px;font-size: 1.4rem;">Agregar</a>
-    
-            </div>
-    
-        </div>
-       </body>
+    </tbody>
+   </table>
+    </table>  
+    </div>
+    </table>
+</body>
 </html>
+

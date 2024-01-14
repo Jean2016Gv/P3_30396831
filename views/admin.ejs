@@ -162,26 +162,90 @@
             text-align: center; 
             color: rgb(152, 160, 244);
         }
+
+        .decorar-arriba{
+         width: 100%;
+         height: 80%;
+        
+        }
+        .decorar-arriba .ul-1 {
+         float: right;
+         margin-right: 50px;
+        }
+        .decorar-arriba .ul-1 .li-1{
+         display:inline-block;
+         margin: -10%;
+         
+        }
+        .cerrar-sesion{
+            text-decoration:none;
+            font-size: 1rem;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            color: white;
+            margin: 30%;
+            
+        }
+
+        .clientes{
+            margin: -110%;
+            text-decoration:none;
+            font-size: 1rem;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            color: white;
+        }
+        .transacciones{
+            margin: 20%;
+            text-decoration:none;
+            font-size: 1rem;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            color: white;
+        }
+        h1{
+       
+         color: white; 
+         font-size: 2rem; 
+         font-weight: 600;
+         text-align: left;
+         font-family: 'Montserrat', sans-serif;
+        }
+
+    
         
     </style>
 </head>
-<a href="/logout" style=" text-decoration-line: underline; margin:20% translate(500%); font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; font-size: 1.5rem; color: rgb(255, 255, 255); padding-left: 90%; margin-bottom: 40%;">Cerrar Sesión</a>
+
+<header>
+    <div class="back">
+        <div class="decorar-arriba">
+            <ul class="ul-1">
+                <li class="li-1"> <a href="/logout" class="cerrar-sesion" >Cerrar sesion</a>
+                    <a href="/administrador/clientes" class="clientes" >Clientes</a>
+                    <a href="/administrador/transacciones" class="transacciones" >Transacciones</a>
+                </li>
+            </ul>
+          <h1><svg style="width: 60px;" fill="none" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><g fill="#ff7a00"><path d="m14.3333 10c-2.3932 0-4.3333 1.8813-4.3333 4.202v23.596c0 2.3207 1.9401 4.202 4.3333 4.202 4.7865 0 8.6667-3.7626 8.6667-8.404v-15.192c0-4.6414-3.8802-8.404-8.6667-8.404z" fill="#ff7a00" style=" fill: rgb(0, 255, 89);"></path><path d="m27 32h42c2.7614 0 5-2.2386 5-5v-3c0-2.7614-2.2386-5-5-5h-42z" fill="#ff7a00" style="fill: rgb(0, 255, 89);"></path><path d="m77.6482 29.5h16.1018c4.5564 0 8.25 3.6937 8.25 8.25 0 4.5564-3.6936 8.25-8.25 8.25h-60.25c-12.9787 0-23.5 10.5213-23.5 23.5s10.5213 23.5 23.5 23.5h2.4603c-.5856-2.6383-.5971-5.3393-.169-8h-2.2913c-8.5604 0-15.5-6.9396-15.5-15.5s6.9396-15.5 15.5-15.5h60.25c8.975 0 16.25-7.2754 16.25-16.25s-7.275-16.25-16.25-16.25h-16.1018c.2291.7937.3518 1.6325.3518 2.5v3c0 .8675-.1227 1.7063-.3518 2.5z" fill="#ff7a00" style="fill: rgb(0, 255, 89);"></path><path d="m74 58v13c0 3.866 3.134 7 7 7h29v22c0 2.761-2.239 5-5 5h-6.0795c.6958-1.696 1.0795-3.553 1.0795-5.5 0-8.0081-6.4919-14.5-14.5-14.5s-14.5 6.4919-14.5 14.5c0 1.947.3836 3.804 1.0795 5.5h-16.1638c-9.9892 0-17.6677-8.8388-16.2711-18.7299 2.446-17.3229 17.4919-28.2701 34.3554-28.2701z" fill="#ff7a00" style="fill: rgb(0, 255, 89);"></path></g><path d="m110 74v-11c0-2.7614-2.239-5-5-5h-27v13c0 1.6569 1.3431 3 3 3z" fill="#ffaa5b" style="fill: rgb(92, 124, 255);"></path><path d="m96 99.5c0 2.017-.5685 3.9-1.554 5.5-1.8484 3-5.1636 5-8.946 5s-7.0976-2-8.946-5c-.9855-1.6-1.554-3.483-1.554-5.5 0-5.799 4.701-10.5 10.5-10.5s10.5 4.701 10.5 10.5z" fill="#ffaa5b" style="fill: rgb(92, 124, 255);"></path></svg>TurboClean</h1>
+        </div>
+    </div>
+   
+</header>
+
+
 <body>
     <div class="wrapper">
         <aside>
             <header>
-                <a href="/"> <h1 class="logo" style="color: white; font-size: 2rem;" > TurboClean</h1></a>
-                <a href="/administrador/Imagenes">  <h2  style="text-decoration:underline; transform: translate(470%); color: white;">Modificar Imagen</h2>
+              
+                <a href="/administrador/Imagenes">  <h2  style="font-size: 1.3rem; text-decoration:underline; transform: translate(467%); color: white;">Modificar Imagen</h2>
                 
             </header>
             <nav>
                 <ul class="categoria">
                     <header>
-                        <a href="/administrador/Categorias"> <h2 style="text-decoration:underline; color: white;">Modificar Categoria</h2></a> 
+                        <a href="/administrador/Categorias"> <h2 style="font-size: 1.3rem; text-decoration:underline; color: white;">Modificar Categoria</h2></a> 
                     </header>
                     <% Categorias.forEach(categoria => { %>
                     <li >
-                        <p><i class="bi bi-hand-index-thumb"></i> <%= categoria.Nombre %></p>
+                        <p style="text-align: center; margin-left: -5%;"><%= categoria.Nombre %></p>
                     </li>
                     <% }); %>
                 </ul>
@@ -189,7 +253,7 @@
         </aside>
         <main>
             <header>
-                <a href="/administrador/Productos"> <h2 class="logo" style="color: rgb(66, 76, 180); font-size: 1.5rem; text-decoration: underline; text-align: center; padding: 3rem;" >Modificar Producto</h2></a>
+                <a href="/administrador/Productos"> <h2 class="logo" style="color: rgb(66, 76, 180); font-size: 1.3rem; text-decoration: underline; text-align: center; padding: 3rem;" >Modificar Producto</h2></a>
             </header>
             <div class="container-productos">
                 <% for(const producto of Productos) { %>
@@ -198,9 +262,10 @@
                 <div class="producto">
                     <figure>
                         <div class="producto-detalles">
-                            
+                            <a href="/administrador/productos/editar/<%=producto.ID %>">
+                                <img src="<%= imagen.URL %>" alt="Producto" height="200" width="200">
+                            </a>
                         </div>
-                        <img src="<%= imagen.URL %>" alt="Producto" height="200" width="200">
                     </figure>
                     <div class="info-producto">
                         <p class="price">
