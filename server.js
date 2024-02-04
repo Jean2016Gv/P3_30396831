@@ -140,7 +140,7 @@ app.get('/login', (req, res) => {
   });
   app.post('/login', (req, res) => {
   const {usuario, contraseña } = req.body;
-  const username = process.env.user;
+  const username = process.env.USER;
   const contra = process.env.PASSWORD;
   if (usuario == username && contraseña == contra) {
     req.session.admin = true;
@@ -1063,27 +1063,30 @@ const sql_prdt = `CREATE TABLE IF NOT EXISTS Productos(ID INTEGER PRIMARY KEY AU
         console.log("Tabla Compra Creada");
     }
 });
-db.run(`CREATE TABLE IF NOT EXISTS Calificaciones (
-  ID INTEGER PRIMARY KEY AUTOINCREMENT,
-  Puntuacion INTEGER,
-  Cliente_ID INTEGER, 
-  Producto_ID INTEGER,
-  FOREIGN KEY (Cliente_ID) REFERENCES Registro (ID),
-  FOREIGN KEY (Producto_ID) REFERENCES Productos (ID)
-  )`);
+
+const sql_cal = `CREATE TABLE IF NOT EXISTS Calificaciones (ID INTEGER PRIMARY KEY AUTOINCREMENT, Puntuacion INTEGER,Cliente_ID INTEGER,  Producto_ID INTEGER, FOREIGN KEY (Cliente_ID) REFERENCES Registro (ID), FOREIGN KEY (Producto_ID) REFERENCES Productos (ID) )`
+
+  db.run(sql_cal, err => {
+   if (err) {
+       console.error(err.message);
+   }else{
+       console.log("Tabla Calificaciones Creada");
+   }
+});
   db.all("PRAGMA table_info(Productos)", (err, rows) => {
     if (err) {
       console.error(err);
       return;
     }
-    
     const columnExists = rows && Array.isArray(rows) && rows.some(row => row.name === 'Promedio');
     if (!columnExists) {
       db.run("ALTER TABLE Productos ADD COLUMN Promedio FLOAT DEFAULT 0", (err) => {
         if (err) {
           console.error(err);
           return;
-        }
+        }else{
+          console.log("Tabla Productos editada");
+      }
       });
     } 
   });
