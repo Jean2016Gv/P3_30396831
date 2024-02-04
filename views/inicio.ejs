@@ -142,23 +142,7 @@
             text-align: center;
             margin-top: 10px; font-weight: bold;
         }
-        .producto-agregar{
-            width: 100%;
-            border: 0;
-            background-color: white;
-            color: rgb(18, 47, 124);
-            padding: .5rem;
-            text-transform: uppercase;
-            border-radius: 1rem;
-            cursor: pointer;
-            border: 2px solid white;
-            transition: background-color .3s, color .3s;
-            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-        }
-        .producto-agregar:hover{
-            background-color: rgb(18, 47, 124) ;
-            color: white;
-        }
+        
          
         .producto:hover{
             box-shadow: 0 10px 20px rgb(0, 0, 0, 0.20);
@@ -203,31 +187,13 @@
         .producto:hover img{
             transform: scale(1.2);
         }
-        .producto-figure{
-            overflow:visible;
-        }
-        .producto:hover img{
-            transform: scale(1.2);
-        }
+        
         .producto-precio{
             font-size: 20px;
             font-weight: 900;
             
         }
-        .boton-carrito{
-            margin:0;
-            color: white;
-        }
-        .numerito{
-            background-color: white;
-            color: rgb(18, 47, 124);
-            padding: .10rem .25rem;
-            border-radius: .25rem;
-        }
-        .boton-carrito.active .numerito{
-            background-color: rgb(18, 47, 124);
-            color: white;
-        }
+       
         .boton-menu{
             background-color: transparent;
             border: 0;
@@ -495,6 +461,19 @@
          display: none;
         }
 
+        .seleccion{
+            border:none; background-color: rgb(157, 177, 245) ;
+            padding: 0.5rem;
+            color: white ;
+            width: 115%;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: inset rgb(109, 14, 225);
+            border-radius:5px;
+            text-transform: capitalize;
+            font-weight: 20%;
+        }
+
        
 
         
@@ -517,9 +496,10 @@
             }
          
             main{
-                margin: 0 auto;
-                padding: 1rem;
-                height: 100%;
+                margin: 110%;
+                padding: 2rem;
+                height: 85%;
+                width: 80%;
                 gap: 1rem;
                 
             }
@@ -643,6 +623,7 @@
 
             .seleccion{
                 margin-left: 5%;
+                width: 90%;
             }
 
             
@@ -665,42 +646,54 @@
           
             .producto-imagen{
                 width: 100px;
-               height: 50px;
-               padding: 15%;
+                height: 50px;
             }
-            
-            
 
             .producto-detalles{
-             margin: -45px;
-             margin-top: 1rem;
-             height: 80px;
-             width: 30px;
-             padding: 55%;
-             gap: 1rem;
-             transform: translate(30%);
-            
+                margin: -10px ;
+                padding: 1rem;
+                border-radius: 1rem;
+                margin-top: 2rem;
+                height: 100px;
+            }
+
+            .info-producto{
+                padding: 5px ;
+                line-height: 0;
+                display: flex;
+                flex-direction: column;
+                border-radius: 1rem;
+                display: flex;
+                flex-direction: column;
+                gap: 0rem;
             }
 
             .producto-titulo{
-                font-size: 0.5rem;
-                margin-top: 1px;
-                margin: -3%;
-                text-align: center;
-                
+             font-size: 0.5rem;
+             text-align: center;
+             margin-top: 10px; font-weight: bold;
             }
-
             .producto-precio{
-                font-size: 0.7rem;
+             font-size: 0.8rem;
+            
             }
 
             .contenedor-productos{
-                margin: -2%;
-                
+                margin: -1%;
             }
+
             figure{
-                margin: 5%;
+                margin: 2%;
             }
+
+
+
+            
+            
+
+            
+            
+
 
 
 
@@ -801,16 +794,7 @@
                                     <div class="input-box">
                                         <div class="text-categoria hidden">
                                             <select class="seleccion"
-                                               style="  border:none; background-color: rgb(157, 177, 245) ;
-                                               padding: 0.5rem;
-                                               color: white ;
-                                               width: 115%;
-                                               text-transform: uppercase;
-                                               cursor: pointer;
-                                               border: inset rgb(109, 14, 225);
-                                               border-radius:5px;
-                                               text-transform: capitalize;
-                                               font-weight: 20%;" name="Categoria" id="Categoria">
+                                                name="Categoria" id="Categoria">
                                               <option value="" selected>Ingrese categoría</option>
                                               <% Productos.forEach(producto => { %>
                                                 <% if (!categoria.has(producto.CategoriaNombre)) {
@@ -840,13 +824,26 @@
                                     <div class="titulo-marca">
                                         <p  class=" boton-menu boton-categoria">Marca <i class="bi bi-chevron-down puntero"></i></p>
                                     </div>
-                                   
                                     <div class="input-box">
                                         <div class="text-marca hidden">
                                             <input style="border-radius: none;  padding: 2px;" type="text" placeholder="Buscar Marca..." id="Marca" name="Marca" class="input-control">
                                         </div>
                                         
                                     </div>
+                                    <div class="titulo-promedio">
+                                        <p class="boton-menu boton-promedio"></i>Promedio<i class="bi bi-chevron-down puntero"></i> </p>
+                                    </div>
+                                    <div class="input-box">
+                                        <div class="text-promedio hidden">
+                            <select name="Promedio" id="Promedio" class="seleccion">
+    <option selected disabled value="">Agrupar por promedio</option>
+    <option value="todos">Todos</option>
+    <option value="menos-de-3">Menos de 3</option>
+    <option value="3-a-4">3 a 4</option>
+    <option value="mayor-o-igual-a-4">Mayor o igual a 4</option>
+  </select>
+
+                                            </div></div>
                                     <li><button class="boton" type="submit">Buscar</button> <a href="/" class="button">Restablecer</a></li>
         
                                 
@@ -894,14 +891,14 @@
                 const toggleCategoria = document.querySelector('.titulo-categoria');
                 const toggleColor = document.querySelector('.titulo-color');
                 const toggleMarca = document.querySelector('.titulo-marca');
-        
+                const togglePromedio = document.querySelector('.titulo-promedio');
                 // Constantes contenido texto
                 const contentProducto = document.querySelector('.text-producto');
                 const contentDescripcion = document.querySelector('.text-descripcion');
                 const contentCategoria = document.querySelector('.text-categoria');
                 const contentColor = document.querySelector('.text-color');
                 const contentMarca = document.querySelector('.text-marca');
-        
+                const contentPromedio = document.querySelector('.text-promedio');
                 // Funciones click
                 toggleProducto.addEventListener('click', () => {
                     contentProducto.classList.toggle('hidden');
@@ -919,6 +916,9 @@
         
                 toggleMarca.addEventListener('click', () => {
                     contentMarca.classList.toggle('hidden');
+                });
+                togglePromedio.addEventListener('click', () => {
+                    contentPromedio.classList.toggle('hidden');
                 });
             </script>
               <script>

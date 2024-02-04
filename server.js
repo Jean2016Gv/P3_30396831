@@ -9,6 +9,7 @@ const bodyParser = require('body-parser');
 const Recaptcha = require('express-recaptcha').RecaptchaV2;
 const recaptcha = new Recaptcha('6Le6p0spAAAAAKDIQVrcTlvwmMy2PM4i6oWhKP1-', '6Le6p0spAAAAAG4WmCFqc51ucRpcPtuHaJeZfeGC');
 const axios = require('axios');
+const nodemailer = require('nodemailer');
 app.use(recaptcha.middleware.verify);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.set('view engine', 'ejs');
@@ -509,8 +510,8 @@ app.get('/cerrarsesion', (req, res) => {
 });
 
 app.post('/buscar', (req, res) => {
-  const { Nombre, Categoria, Descripcion, Marca, Color } = req.body;
-  let sql = 'SELECT Productos.ID, Productos.Nombre, Productos.precio, Productos.Codigo, Productos.Descripcion, Productos.Marca, Productos.Color, Categorias.Nombre AS CategoriaNombre, Imagenes.URL, Imagenes.Destacado FROM Productos INNER JOIN Categorias ON Productos.Categoria_ID = Categorias.ID INNER JOIN Imagenes ON Productos.ID = imagenes.producto_id where 1=1';
+  const { Nombre, Categoria, Descripcion, Marca, Color, Promedio } = req.body;
+  let sql = 'SELECT Productos.ID, Productos.Nombre, Productos.Precio, Productos.Promedio, Productos.Codigo, Productos.Descripcion, Productos.Marca, Productos.Color, Categorias.Nombre AS CategoriaNombre, Imagenes.URL, Imagenes.Destacado FROM Productos INNER JOIN Categorias ON Productos.Categoria_ID = Categorias.ID INNER JOIN Imagenes ON Productos.ID = imagenes.producto_id where 1=1';
 
   const params = [];
   if (Nombre) {
@@ -537,7 +538,21 @@ app.post('/buscar', (req, res) => {
     sql += " AND Productos.Color LIKE '%' || ? || '%'";
     params.push(Color);
   }
-
+  if (Promedio) {
+    switch (Promedio) {
+      case 'menos-de-3':
+        sql += " AND Productos.Promedio < 3";
+        break;
+      case '3-a-4':
+        sql += " AND Productos.Promedio >= 3 AND Productos.Promedio <= 4";
+        break;
+      case 'mayor-o-igual-a-4':
+        sql += " AND Productos.Promedio >= 4";
+        break;
+      default:
+        break;
+    }
+  }
   db.all(sql, params, (err, rows) => {
     if (err) {
       return console.error(err.message);
@@ -552,16 +567,19 @@ app.post('/buscar', (req, res) => {
 });
 app.get('/producto/:id', (req, res) => {
   const ID = req.params.id;
+  const correo = req.session.username;
   const sqlProd = "SELECT * FROM Productos WHERE ID = ?";
   const sqlIma = "SELECT * FROM Imagenes WHERE Producto_ID = ?";
   const sqlCat = "SELECT * FROM Categorias WHERE ID IN (SELECT Categoria_ID FROM Productos WHERE ID = ?)";
-  
+  const sqlCli = "SELECT ID FROM Registro WHERE correo = ?";
+  const sqlCal = "SELECT Puntuacion FROM Calificaciones WHERE producto_id = ? AND cliente_id = ?";
+
   db.get(sqlProd, ID, (err, Productos) => {
     if (err) {
       console.error(err);
       return;
     }
-    
+
     if (!Productos) {
       res.status(404).send("Producto no encontrado.");
       return;
@@ -579,8 +597,43 @@ app.get('/producto/:id', (req, res) => {
           return;
         }
 
-        res.render('producto.perfil.ejs', { Productos, Imagenes, Categorias, ID });
-      });
+        db.get(sqlCli, correo, (err, cliente) => {
+          if (err) {
+            console.error(err);
+            return;
+          }
+
+
+            if (req.session.user) {
+              db.get(sqlCal, [ID, cliente.ID], (err, puntuacion) => {
+                if (err) {
+                  console.error(err);
+                  return;
+                }
+
+                res.render('producto.perfil.ejs', {
+                  Productos,
+                  Imagenes,
+                  Categorias,
+                  ID,
+                  cliente,
+                  puntuacion,
+                  user: req.session.user
+                });
+              });
+            } else {
+              res.render('producto.perfil.ejs', {
+                Productos,
+                Imagenes,
+                Categorias,
+                ID,
+                cliente,
+                puntuacion: 0,
+                user: req.session.user
+              });
+            }
+          });
+        });
     });
   });
 });
@@ -635,6 +688,8 @@ app.post('/payments', async (req, res) => {
     name: fullName,
     "card-number": tarjeta,
     precio,
+    nombre,
+    correo,
     id: idProducto,
     idCliente: idCliente,
     cantidad
@@ -658,12 +713,13 @@ app.post('/payments', async (req, res) => {
         Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJkYXRlIjoiMjAyNC0wMS0xM1QyMTo1MTowMy42NjhaIiwiaWF0IjoxNzA1MTgyNjYzfQ.axESJcjQ06PKq3gQEUJhkuDNNztHGNnLAdnxzoyEfrA'
       }
     });
-    const datos = JSON.parse(JSON.stringify(response.data));
+   const datos = JSON.parse(JSON.stringify(response.data));
     const transactionId = datos.data.transaction_id;
     const amount = datos.data.amount;
     const date = datos.data.date;
     const reference = datos.data.reference;
     const description = datos.data.description;
+
     await new Promise((resolve, reject) => {
       db.run("INSERT INTO Compra (Transaccion_ID, Cantidad, Total_Pagado, Fecha, IP_Cliente, Cliente_ID, Producto_ID) VALUES(?,?,?,?,?,?,?)",
         [transactionId, cantidad, amount, date, ip_cliente, reference, description],
@@ -675,10 +731,32 @@ app.post('/payments', async (req, res) => {
           }
         });
     });
+    const transporter = nodemailer.createTransport({
+      host: process.env.HOST,
+      port: process.env.PORT,
+      auth: {
+        user: process.env.USER_EMAIL,
+        pass: process.env.PASS
+      }
+    });
+    const mailOptions = {
+      from: process.env.USER_EMAIL,
+      to: correo,
+      subject: 'Confirmación de compra',
+      text: `¡Hola, ${fullName}!\n\nGracias por tu compra. Tu compra fue la siguiente:\n\nTransacción: ${transactionId}.\nProducto: ${nombre}. \nCantidad: ${cantidad} unidades.\nTotal pagado: ${precioProducto} USD.`
+    };
+  
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log('Error al enviar el correo de confirmación:', error);
+      } else {
+        console.log('Correo de confirmación enviado:', info.response);
+      }
+    });
     req.session.datos = datos;
     res.redirect("/transaccion");
   } catch (error) {
-    res.render('transaccion', { error, datos : null, idProducto });
+    res.render('transaccion', { error, datos: null, idProducto });
   }
 });
 app.get('/transaccion', (req, res) => {
@@ -724,6 +802,181 @@ app.get('/administrador/transacciones', (req, res) => {
     });
   }
 });
+app.post('/calificar/:ID', (req, res) => {
+  const correo = req.session.username;
+  const ID = req.params.ID;
+  const puntuacion = req.body.puntuacion;
+  db.get("SELECT ID FROM Registro WHERE correo = ?", [correo], (err, rows) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+
+    if (!rows) {
+      res.redirect('/');
+      return;
+    }
+
+    const cliente_id = rows.ID;
+
+    db.get("SELECT * FROM compra WHERE cliente_id = ? AND producto_id = ?", [cliente_id, ID], (err, row) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+
+      if (!row) {
+        res.redirect('/');
+        return;
+      }
+
+      db.get("SELECT * FROM calificaciones WHERE cliente_id = ? AND producto_id = ?", [cliente_id, ID], (err, row) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+
+        if (row) {
+          db.run("UPDATE calificaciones SET puntuacion = ? WHERE cliente_id = ? AND producto_id = ?", [puntuacion, cliente_id, ID], (err) => {
+            if (err) {
+              console.error(err);
+              return;
+            }
+
+            db.get("SELECT AVG(puntuacion) AS promedio FROM calificaciones WHERE producto_id = ?", ID, (err, row) => {
+              if (err) {
+                console.error(err);
+                return;
+              }
+
+              const promedio = row.promedio || 0;
+
+              db.run("UPDATE productos SET promedio = ? WHERE id = ?", [promedio, ID], (err) => {
+                if (err) {
+                  console.error(err);
+                  return;
+                }
+
+                res.redirect(`/producto/${ID}`);
+              });
+            });
+          });
+        } else {
+          db.run("INSERT INTO calificaciones (puntuacion, cliente_id, producto_id) VALUES (?, ?, ?)", [puntuacion, cliente_id, ID], (err) => {
+            if (err) {
+              console.error(err);
+              return;
+            }
+
+            db.get("SELECT AVG(puntuacion) AS promedio FROM calificaciones WHERE producto_id = ?", ID, (err, row) => {
+              if (err) {
+                console.error(err);
+                return;
+              }
+
+              const promedio = row.promedio || 0;
+
+              db.run("UPDATE productos SET promedio = ? WHERE id = ?", [promedio, ID], (err) => {
+                if (err) {
+                  console.error(err);
+                  return;
+                }
+
+                res.redirect(`/producto/${ID}`);
+              });
+            });
+          });
+        }
+      });
+    });
+  });
+});
+app.get('/recuperar', function(req, res, next){
+  if (req.session.user) {
+    res.redirect("/");
+  } else if (req.session.admin) {
+    res.redirect("/administrador");
+  } else {
+  res.render('recuperar');
+  }
+});
+app.post('/recuperar', (req, res) => {
+  const { Nombre, Correo } = req.body;
+  
+  const sql = 'SELECT * FROM Registro WHERE nombre = ? and correo = ?';
+  db.get(sql, [Nombre, Correo], (err, row) => {
+    if (row) {
+      req.session.link = true;
+      const transporter = nodemailer.createTransport({
+        host: process.env.HOST,
+        port: process.env.PORT,
+        auth: {
+          user: process.env.USER_EMAIL,
+          pass: process.env.PASS
+        }
+      });
+
+      const mailOptions = {
+        from: process.env.USER_EMAIL,
+        to: Correo,
+        subject: 'Restablecimiento de contraseña',
+        text: `Restablecer tu contraseña.\n\nHaz clic en el siguiente enlace para continuar:\n\n${process.env.BASE_URL}/recuperacion/${row.ID}`
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log('Error al enviar el correo de restablecimiento de contraseña:', error);
+          res.redirect('/recuperar');
+        } else {
+          console.log('Correo de restablecimiento de contraseña enviado:', info.response);
+          res.send('Correo de restablecimiento de contraseña enviado.'); 
+        }
+      });
+    } else {
+      res.redirect('/inicioSesionClientes');
+    }
+  });
+});
+//Pagina restablecer contraseña
+app.get('/recuperacion/:id', function(req, res, next){
+  const id= req.params.id;
+  if (req.session.user) {
+    res.redirect("/");
+  } else if (req.session.admin) {
+    res.redirect("/administrador");
+  } else {
+    if (req.session.link) {
+        res.render('recuperacion', {id});
+    } else {
+      res.redirect('/recuperar');
+    }
+  }
+});
+
+//Restablecer Contraseña
+app.post('/recuperacion/:id', function(req, res, next){
+  const id= req.params.id;
+  req.session.link = false;
+  const {password} = req.body;
+  const query = 'UPDATE Registro SET Contraseña = ? WHERE id = ?';
+  db.run(query, [password, id], (err) => {
+    if (err) {
+      res.redirect('/');
+    } else {
+      const message = 'Contraseña cambiada exitosamente';
+      const redirectUrl = '/';
+      const response = `<p>${message}</p><script>window.location.href = '${redirectUrl}';</script>`;
+      res.send(response);
+    }
+  });
+});
+
+
+
+
+
+
+
 
    app.get('/*', function(req, res) {
     res.redirect('/');
@@ -773,7 +1026,7 @@ const sql_prdt = `CREATE TABLE IF NOT EXISTS Productos(ID INTEGER PRIMARY KEY AU
       }else{
           console.log("Tabla Productos Creada");
       }
-  });
+  }); 
   
   //Crear Tabla Imagenes
   const sql_img = `CREATE TABLE IF NOT EXISTS Imagenes (ID INTEGER PRIMARY KEY AUTOINCREMENT,URL TEXT,Destacado text,
@@ -800,7 +1053,7 @@ const sql_prdt = `CREATE TABLE IF NOT EXISTS Productos(ID INTEGER PRIMARY KEY AU
 
   //Crear Tabla Compra
   const sql_cmp = `CREATE TABLE IF NOT EXISTS Compra ( Transaccion_ID TEXT PRIMARY KEY, Cantidad INTEGER, Total_Pagado FLOAT,
-   Fecha datetime, IP_Cliente TEXT, Cliente_ID TEXT, Producto_ID TEXT, FOREIGN KEY(Cliente_ID) REFERENCES Compra(ID), 
+   Fecha datetime, IP_Cliente TEXT, Cliente_ID TEXT, Producto_ID TEXT, FOREIGN KEY(Cliente_ID) REFERENCES Registro(ID), 
    FOREIGN KEY(Producto_ID) REFERENCES Productos(ID) )`
 
    db.run(sql_cmp, err => {
@@ -810,6 +1063,30 @@ const sql_prdt = `CREATE TABLE IF NOT EXISTS Productos(ID INTEGER PRIMARY KEY AU
         console.log("Tabla Compra Creada");
     }
 });
+db.run(`CREATE TABLE IF NOT EXISTS Calificaciones (
+  ID INTEGER PRIMARY KEY AUTOINCREMENT,
+  Puntuacion INTEGER,
+  Cliente_ID INTEGER, 
+  Producto_ID INTEGER,
+  FOREIGN KEY (Cliente_ID) REFERENCES Registro (ID),
+  FOREIGN KEY (Producto_ID) REFERENCES Productos (ID)
+  )`);
+  db.all("PRAGMA table_info(Productos)", (err, rows) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    
+    const columnExists = rows && Array.isArray(rows) && rows.some(row => row.name === 'Promedio');
+    if (!columnExists) {
+      db.run("ALTER TABLE Productos ADD COLUMN Promedio FLOAT DEFAULT 0", (err) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+      });
+    } 
+  });
   
 
  

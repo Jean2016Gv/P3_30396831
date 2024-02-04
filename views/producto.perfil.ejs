@@ -1,10 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html >
+<html lang="en" prefix="og: https://ogp.me/ns#">
 <head>
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1692/1692816.png">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="<%= Productos.Nombre %>">
+    <meta property="og:description" content="<%= Productos.Descripcion %>">
+    <meta property="og:image" content="<%= Imagenes.URL %>">
+    <meta property="og:type" content="website">
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4B5JD7EGC8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4B5JD7EGC8');
+</script>
     <title>TurboClean</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
@@ -110,6 +123,7 @@
             align-items: center;
             width: 100%;
             
+            
         }
         .container-add-cart{
             text-align: center;
@@ -146,14 +160,26 @@
     .boton:hover::before{
         background-color: hsla(0, 0%, 0%, 0.3) ;
     }
-    .container-color,
+    .container-color{
+        transform: translateY(35%);
+        display: flex;
+        flex-direction: column;
+        border-bottom: 1px solid rgb(157, 177, 245);
+        padding: 10px 0;
+        width: 100%;
+    }
     .container-descripcion{
         display: flex;
         flex-direction: column;
         border-bottom: 1px solid rgb(157, 177, 245);
         padding: 10px 0;
         width: 100%;
+        transform: translateY(10%);
 
+    }
+
+    .container-detalles{
+        transform: translateY(15%);
     }
     .titulo-color,
     .titulo-descripcion{
@@ -198,7 +224,7 @@
             font-size: 1rem;
             font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
             color: white;
-            padding: 5%;
+            padding: 30%;
         }
 
         .titulo{
@@ -286,57 +312,45 @@
             z-index: -1;
             transition: transform 0.3s ease;
         }
+    
+
+        .precio{
+            padding: 10px 0; font-weight: 300;
+             color:rgb(190, 247, 252);
+        }
+
+
+        
 
 
          /*Responsive*/
          @media screen and (max-width: 600px){
-            img{
-             max-width: 6000%;
-             height: 30%;
-             margin-left: 20%;
-             padding: 10%;
+            main{
+             display:block;
+             transform: translateY(5%);
             }
 
-            h1{
-                font-size: 1.5rem;
-                margin: -3%;
-                padding: 1rem;
+            img{
+             max-width: 150px;
+            
+            }
 
+            .container-info-productos{
+             padding: 7%;
+             display: block;
+
+            }
+
+            .container-descripcion{
+                transform: translateY(10%);
             }
 
             .titulo{
-             margin: -1%;
-             font-size: 0.9rem; 
-             text-align: center;
+                font-size: 1.5rem;
             }
-            .container-info-productos{
-                margin: 5%;
-            }
+            
 
-            h5{
-                font-size: 0.7 ;
-                text-align: center;
-            }
-
-            h4{
-                text-align: center;
-            }
-            .bi-chevron-down{
-                font-size: 0.7rem;
-            }
-
-            .boton{
-                width: 150%;
-                font-size: 0.8rem;
-            }
-
-            .decorar-arriba .ul-1 .li-1{
-              margin: -20px;
-              padding: -15%;
-            }
-            body{
-                margin: 5%;
-            }
+            
 
 
 
@@ -367,43 +381,68 @@
     <main>
         <div class="container-imagen">
             <img src="<%= Imagenes.URL %>" alt="">
-        </div>
-        <div class="container-info-productos">
+          </div>
+          <div class="container-info-productos" itemscope itemtype="http://schema.org/Product">
             <div class="container-price">
-                <div class="titulo">
-                    <%= Productos.Nombre %>
-                </div>
+              <div class="titulo" itemprop="name">
+                <%= Productos.Nombre %>
+              </div>
             </div>
             <div class="container-color">
-                <div class="titulo-color">
-                    <h5>Color</h5>
-                    <i style="color:rgb(96, 187, 195) ;" class="bi bi-chevron-down"></i>
-                </div>
-                <div class="text-color hidden">
-                    <h4><%= Productos.Color %></h4>
-                </div>
+              <div class="titulo-color">
+                <h5>Color</h5>
+                <i style="color:rgb(96, 187, 195) ;" class="bi bi-chevron-down"></i>
+              </div>
+              <div class="text-color hidden" itemprop="color">
+                <h4><%= Productos.Color %></h4>
+              </div>
             </div>
             <div class="container-detalles">
-                <h5>Marca</h5>
-                <h4><%= Productos.Marca %></h4>
-        
-                <h5>Precio</h5>
-                <h1 style="
-                padding: 10px 0; font-weight: 300; color:rgb(190, 247, 252);"><%= Productos.Precio %> $</h1>
+              <h5>Marca</h5>
+              <h4 itemprop="brand"><%= Productos.Marca %></h4>
+              <h5>Precio</h5>
+              <h1 class="precio" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                <span itemprop="price"><%= Productos.Precio %></span> $
+              </h1>
             </div>
             <div class="container-descripcion">
-                <div class="titulo-descripcion">
-                    <h5>Descripcion</h5>
-                    <i style="color:rgb(96, 187, 195) ;"  class="bi bi-chevron-down"></i>
-                </div>
-                <div class="text-descripcion hidden">
-                    <h4><%= Productos.Descripcion %></h4>;  
-                </div>
+              <div class="titulo-descripcion">
+                <h5>Descripcion</h5>
+                <i style="color:rgb(96, 187, 195) ;" class="bi bi-chevron-down"></i>
+              </div>
+              <div class="text-descripcion hidden" itemprop="description">
+                <h4><%= Productos.Descripcion %></h4>
+              </div>
             </div>
-            <div class="buttons">
-                <a href="/pago/<%=ID%>" class="btn" style=" padding: 20px 30px;">Comprar</a>
-            </div>
-        </div>
+          </div>
+            <div class="container-clasificacion">
+                <h5>Calificación del cliente</h5>
+                <% if (puntuacion === undefined) {
+                    puntuacion = { Puntuacion: 0 };
+                  } %>
+                  <p style="color: white;" class="average-rating">Calificación promedio: <%= Productos.Promedio %></p>
+                <% if (user) { %>
+                    <p style="color: white; font-size: small;">Recuerda que tienes que comprar el producto para poder realizar una calificación.</p>
+                  <p  style="color: white;" class="user-rating">Tu calificación: <%= puntuacion.Puntuacion %></p>
+                <% } %>
+              </div>
+              
+              <% if (user) { %>
+                <div>
+                  <form action="/calificar/<%= Productos.ID %>" method="POST">
+                    <label style="display: none;" for="puntuacion" class="form-label" id="puntuacion-label"><%= puntuacion.Puntuacion  %></label>
+                    <input type="range" class="form-range" min="1" max="5" step="1" id="puntuacion" name="puntuacion" value="<%= puntuacion.Puntuacion  %>" onchange="updateLabel(this.value)">
+                    <div style="color: white;" id="puntuacion-indicator" class="indicator"><%= puntuacion.Puntuacion  %></div>
+                    <div class="buttons">
+                      <button type="submit" class="btn">Calificar</button>
+                    </div>
+                  </form>
+                </div>
+              <% } %>
+              
+              <div class="buttons">
+                <a href="/pago/<%= ID %>" class="btn" style="padding: 20px 30px;">Comprar</a>
+              </div>
     </main>
     <script>
         // Toggle
@@ -424,8 +463,29 @@
         toggleDescripcion.addEventListener('click', () => {
             contentDescripcion.classList.toggle('hidden');
         });
-    </script>
+        function updateLabel(value) {
+      document.getElementById('puntuacion-label').textContent = value;
+      var indicator = document.getElementById('puntuacion-indicator');
+      var range = document.getElementById('puntuacion');
+      var rangeWidth = range.offsetWidth;
+      var min = parseInt(range.min);
+      var max = parseInt(range.max);
+      var position = ((value - min) / (max - min)) * rangeWidth;
+      indicator.style.left = position + 'px';
+      
+      if (value == 0) {
+        indicator.style.display = 'none';
+      } else {
+        indicator.style.display = 'block';
+        indicator.textContent = value;
+      }
+    }
 
+    window.addEventListener('load', function() {
+      var initialRating = document.getElementById('puntuacion').value;
+      updateLabel(initialRating);
+    });
+    </script>
 
 </body>
 </html>

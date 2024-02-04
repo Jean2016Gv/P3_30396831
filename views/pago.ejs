@@ -236,7 +236,7 @@
 </header>
 <body>
     <div class="otro-fondo">
-        <h2>Formulario Transacción</h2>
+        <h2>Transacción</h2>
     </div>
 
         
@@ -254,7 +254,7 @@
                             <h6>Nombre del producto</h6>
                             <input type="text" class="input-control" id="nombre" name="nombre" value="<%= productos.Nombre %>" readonly>
                             <h6>Precio del producto</h6>
-                            <input type="text" class="input-control" id="precio" name="precio" value="<%= productos.Precio %>"  readonly>
+                            <input type="text" class="input-control" id="precio" name="precio" value="<%= productos.Precio %>" readonly  >
                             <h6 style="display: none;">ID</h6>
                             <input type="text" style="display: none;" class="input-control" id="id" name="id" value="<%= productos.ID %>" readonly>
     
@@ -271,13 +271,13 @@
                             
                         <div class="input-box"> 
                             <h6>Nombre y apellido</h6>
-                            <input type="text" name="name" id="name" placeholder="Ingrese su nombre" class="input-control" value="<%= clientes.Nombre %>" maxlength="255" required>
+                            <input readonly type="text" name="name" id="name" placeholder="Ingrese su nombre" class="input-control" value="<%= clientes.Nombre %>" maxlength="255" required>
                         </div>
         
         
                         <div class="input-box">
                             <h6>Correo</h6>
-                            <input type="text"  class="input-control" id="staticEmail" value="<%= clientes.Correo %>">
+                            <input readonly type="text"  class="input-control" id="correo" name="correo" value="<%= clientes.Correo %>">
                         </div>
         
         
