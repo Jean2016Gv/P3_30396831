@@ -21,6 +21,12 @@ app.use(session({
     resave: false,
     saveUninitialized: false
   }));
+  const transporter = nodemailer.createTransport({ 
+  service: 'gmail', 
+  auth: { 
+    user: process.env.USER_EMAIL, 
+    pass: process.env.PASS
+  } });
   app.get('/', function(req, res) {
     let sql = 'SELECT Productos.ID, Productos.Nombre, Productos.precio, Productos.Codigo, Productos.Descripcion, Productos.Marca, Productos.Color, Categorias.Nombre AS CategoriaNombre, Imagenes.URL, Imagenes.Destacado FROM Productos INNER JOIN Categorias ON Productos.Categoria_ID = Categorias.ID INNER JOIN Imagenes ON Productos.ID = imagenes.producto_id where 1=1';
 
@@ -67,6 +73,22 @@ app.post('/registro.Clientes' , (req, res) =>{
         if (row) {
           return res.redirect('/registro.Clientes');
         }
+
+  
+        const mailOptions = {
+          from: process.env.USER_EMAIL,
+          to: Correo,
+          subject: '¡Bienvenido!',
+          text: `¡Bienvenido a TurboClean!`
+        };
+  
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.log('Error al enviar el correo de bienvenida:', error);
+          } else {
+            console.log('Correo de bienvenida enviado:', info.response);
+          }
+        });
     
         const sqlCliente = "INSERT INTO Registro (Nombre, Correo, Contraseña) VALUES (?, ?, ?)";
         db.run(sqlCliente, [Nombre, Correo, Contraseña], (err) => {
@@ -731,14 +753,7 @@ app.post('/payments', async (req, res) => {
           }
         });
     });
-    const transporter = nodemailer.createTransport({
-      host: process.env.HOST,
-      port: process.env.PORT,
-      auth: {
-        user: process.env.USER_EMAIL,
-        pass: process.env.PASS
-      }
-    });
+
     const mailOptions = {
       from: process.env.USER_EMAIL,
       to: correo,
@@ -907,14 +922,6 @@ app.post('/recuperar', (req, res) => {
   db.get(sql, [Nombre, Correo], (err, row) => {
     if (row) {
       req.session.link = true;
-      const transporter = nodemailer.createTransport({
-        host: process.env.HOST,
-        port: process.env.PORT,
-        auth: {
-          user: process.env.USER_EMAIL,
-          pass: process.env.PASS
-        }
-      });
 
       const mailOptions = {
         from: process.env.USER_EMAIL,

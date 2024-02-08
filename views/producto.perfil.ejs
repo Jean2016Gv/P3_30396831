@@ -188,6 +188,8 @@
         justify-content: space-between;
         cursor: pointer;
     }
+
+   
     h4{
         color: rgb(251, 251, 251);
         font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
@@ -381,7 +383,7 @@
     <main>
         <div class="container-imagen">
             <img src="<%= Imagenes.URL %>" alt="">
-          </div>
+        </div>
           <div class="container-info-productos" itemscope itemtype="http://schema.org/Product">
             <div class="container-price">
               <div class="titulo" itemprop="name">
@@ -414,36 +416,37 @@
                 <h4><%= Productos.Descripcion %></h4>
               </div>
             </div>
-          </div>
             <div class="container-clasificacion">
-                <h5>Calificación del cliente</h5>
-                <% if (puntuacion === undefined) {
-                    puntuacion = { Puntuacion: 0 };
-                  } %>
-                  <p style="color: white;" class="average-rating">Calificación promedio: <%= Productos.Promedio %></p>
-                <% if (user) { %>
-                    <p style="color: white; font-size: small;">Recuerda que tienes que comprar el producto para poder realizar una calificación.</p>
-                  <p  style="color: white;" class="user-rating">Tu calificación: <%= puntuacion.Puntuacion %></p>
-                <% } %>
-              </div>
-              
+              <h5>Calificación del cliente</h5>
+              <% if (puntuacion === undefined) {
+                  puntuacion = { Puntuacion: 0 };
+                } %>
+                <p style="color: white; font-family: 'Times New Roman', Times, serif;" class="average-rating">Calificación promedio: <%= Productos.Promedio %></p>
               <% if (user) { %>
-                <div>
-                  <form action="/calificar/<%= Productos.ID %>" method="POST">
-                    <label style="display: none;" for="puntuacion" class="form-label" id="puntuacion-label"><%= puntuacion.Puntuacion  %></label>
-                    <input type="range" class="form-range" min="1" max="5" step="1" id="puntuacion" name="puntuacion" value="<%= puntuacion.Puntuacion  %>" onchange="updateLabel(this.value)">
-                    <div style="color: white;" id="puntuacion-indicator" class="indicator"><%= puntuacion.Puntuacion  %></div>
-                    <div class="buttons">
-                      <button type="submit" class="btn">Calificar</button>
-                    </div>
-                  </form>
-                </div>
+                  <p style="color: rgb(122, 237, 172); font-size: 1rem; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Recuerde que tiene que comprar el producto para poder realizar una calificación.</p>
+                <p  style="color: white; font-family: 'Times New Roman', Times, serif;" class="user-rating">Tu calificación: <%= puntuacion.Puntuacion %></p>
               <% } %>
-              
-              <div class="buttons">
-                <a href="/pago/<%= ID %>" class="btn" style="padding: 20px 30px;">Comprar</a>
+           </div>
+            
+            <% if (user) { %>
+              <div>
+                <form action="/calificar/<%= Productos.ID %>" method="POST">
+                  <label style="display: none;" for="puntuacion" class="form-label" id="puntuacion-label"><%= puntuacion.Puntuacion  %></label>
+                  <input type="range"  class="form-range" min="1" max="5" step="1" id="puntuacion" name="puntuacion" value="<%= puntuacion.Puntuacion  %>" onchange="updateLabel(this.value)">
+                  <div style="color: white;" id="puntuacion-indicator"  class="indicator"><%= puntuacion.Puntuacion  %></div>
+                  <div class="buttons">
+                    <button type="submit" class="btn" style="padding: 10px 10px; height: 50px; transform: translate(30%);">Calificar</button>
+                  </div>
+                </form>
               </div>
-    </main>
+            <% } %>
+            
+            <div class="buttons">
+              <a href="/pago/<%= ID %>" class="btn" style="padding: 20px 30px;">Comprar</a>
+            </div>
+          </div>
+          
+     </main>
     <script>
         // Toggle
 
